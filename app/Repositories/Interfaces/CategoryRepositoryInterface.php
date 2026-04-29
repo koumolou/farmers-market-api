@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Repositories\Interfaces;
+use Illuminate\Database\Eloquent\Collection;
 
-interface ProductRepositoryInterface
+interface CategoryRepositoryInterface
 {
     public function all();
-    public function allWithCategory();                        
-    public function getByCategory(int $categoryId);          
     public function findById(int $id);
-
+   public function getRoots(): Collection;
+   
     public function create(array $data);
     public function update(int $id, array $data);
-    public function delete(int $id);
+   public function delete(int $id): bool;
 }
