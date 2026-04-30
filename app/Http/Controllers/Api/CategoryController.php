@@ -14,7 +14,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        // Returns full nested tree — useful for Flutter category navigation
+        
         $tree = $this->categoryService->getTree();
         return ApiResponse::success($tree);
     }

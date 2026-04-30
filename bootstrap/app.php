@@ -20,5 +20,58 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+
+        // Validation errors — 422
+        $exceptions->render(function (
+            \Illuminate\Validation\ValidationException $e,
+            $request
+        ) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+        });
+
+        // Authorization errors — 403
+        $exceptions->render(function (
+            \Illuminate\Auth\Access\AuthorizationException $e,
+            $request
+        ) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage() ?: 'Forbidden',
+                ], 403);
+            }
+        });
+
+        // Unauthenticated — 401
+        $exceptions->render(function (
+            \Illuminate\Auth\AuthenticationException $e,
+            $request
+        ) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated. Please login.',
+                ], 401);
+            }
+        });
+
+        // Model not found — 404
+        $exceptions->render(function (
+            \Illuminate\Database\Eloquent\ModelNotFoundException $e,
+            $request
+        ) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Resource not found.',
+                ], 404);
+            }
+        });
+
+    })->create(); 

@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        // Optional filter by category_id: GET /api/products?category_id=3
+   
         if ($request->has('category_id')) {
             $products = $this->productService->getByCategory((int) $request->category_id);
         } else {

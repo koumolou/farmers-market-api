@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('supervisors/{id}', [UserController::class, 'destroy'])->name('supervisors.destroy');
     });
 
-    // Admin + Supervisor — manage operators, categories, products
+    // Admin + Supervisor — manage operators
     Route::middleware('role:admin,supervisor')->group(function () {
         Route::get('operators',           [UserController::class, 'index'])->name('operators.index');
         Route::post('operators',          [UserController::class, 'store'])->name('operators.store');
@@ -35,20 +35,32 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('operators/{id}',      [UserController::class, 'update'])->name('operators.update');
         Route::delete('operators/{id}',   [UserController::class, 'destroy'])->name('operators.destroy');
 
-        Route::apiResource('categories',  CategoryController::class);
-        Route::apiResource('products',    ProductController::class);
+        // Manage (write) categories and products
+        Route::post('categories',         [CategoryController::class, 'store']);
+        Route::put('categories/{id}',     [CategoryController::class, 'update']);
+        Route::delete('categories/{id}',  [CategoryController::class, 'destroy']);
+
+        Route::post('products',           [ProductController::class, 'store']);
+        Route::put('products/{id}',       [ProductController::class, 'update']);
+        Route::delete('products/{id}',    [ProductController::class, 'destroy']);
     });
 
+    // All authenticated roles — read categories and products
+    Route::get('categories',              [CategoryController::class, 'index']);
+    Route::get('categories/{id}',         [CategoryController::class, 'show']);
+    Route::get('products',                [ProductController::class, 'index']);
+    Route::get('products/{id}',           [ProductController::class, 'show']);
+
     // All authenticated roles — read-only farmer access
-    Route::get('farmers/search', [FarmerController::class, 'search']);
-    Route::get('farmers',        [FarmerController::class, 'index']);
-    Route::get('farmers/{id}',   [FarmerController::class, 'show']);
+    Route::get('farmers/search',          [FarmerController::class, 'search']);
+    Route::get('farmers',                 [FarmerController::class, 'index']);
+    Route::get('farmers/{id}',            [FarmerController::class, 'show']);
 
     // Operators only — farmer mutations + POS actions
     Route::middleware('role:operator')->group(function () {
-        Route::post('farmers',        [FarmerController::class, 'store']);
-        Route::put('farmers/{id}',    [FarmerController::class, 'update']);
-        Route::delete('farmers/{id}', [FarmerController::class, 'destroy']);
+        Route::post('farmers',            [FarmerController::class, 'store']);
+        Route::put('farmers/{id}',        [FarmerController::class, 'update']);
+        Route::delete('farmers/{id}',     [FarmerController::class, 'destroy']);
 
         Route::post('transactions/checkout',      [TransactionController::class, 'checkout']);
         Route::post('repayments',                 [RepaymentController::class, 'store']);
