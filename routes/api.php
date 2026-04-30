@@ -39,12 +39,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('products',    ProductController::class);
     });
 
-    // All authenticated roles
-    Route::get('farmers/search',              [FarmerController::class, 'search']);
-    Route::apiResource('farmers',             FarmerController::class);
+    // All authenticated roles — read-only farmer access
+    Route::get('farmers/search', [FarmerController::class, 'search']);
+    Route::get('farmers',        [FarmerController::class, 'index']);
+    Route::get('farmers/{id}',   [FarmerController::class, 'show']);
 
-    Route::post('transactions/checkout',      [TransactionController::class, 'checkout']);
+    // Operators only — farmer mutations + POS actions
+    Route::middleware('role:operator')->group(function () {
+        Route::post('farmers',        [FarmerController::class, 'store']);
+        Route::put('farmers/{id}',    [FarmerController::class, 'update']);
+        Route::delete('farmers/{id}', [FarmerController::class, 'destroy']);
 
-    Route::post('repayments',                 [RepaymentController::class, 'store']);
-    Route::get('farmers/{farmer}/repayments', [RepaymentController::class, 'farmerRepayments']);
+        Route::post('transactions/checkout',      [TransactionController::class, 'checkout']);
+        Route::post('repayments',                 [RepaymentController::class, 'store']);
+        Route::get('farmers/{farmer}/repayments', [RepaymentController::class, 'farmerRepayments']);
+    });
 });

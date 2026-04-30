@@ -2,27 +2,30 @@
 
 namespace App\Http\Requests\User;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-   public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        $user = auth()->user();
+       
+        return $user && ($user->isAdmin() || $user->isSupervisor());
+    }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-  public function rules(): array
-{
-    return [
-        'name'     => 'required|string|max:100',
-        'email'    => 'required|email|unique:users,email',
-        'password' => 'required|string|min:8|confirmed',
-    ];
-}
+    public function rules(): array
+    {
+        return [
+            'name'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ];
+    }
+
+    public function failedAuthorization()
+    {
+        throw new \Illuminate\Auth\Access\AuthorizationException(
+            'You do not have permission to create users.'
+        );
+    }
 }

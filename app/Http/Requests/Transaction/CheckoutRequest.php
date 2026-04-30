@@ -2,31 +2,30 @@
 
 namespace App\Http\Requests\Transaction;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CheckoutRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check() && auth()->user()->isOperator();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-  public function rules(): array {
-    return [
-        'farmer_id'              => 'required|exists:farmers,id',
-        'payment_method'         => 'required|in:cash,credit',
-        'items'                  => 'required|array|min:1',
-        'items.*.product_id'     => 'required|exists:products,id',
-        'items.*.quantity'       => 'required|integer|min:1',
-    ];
-}
+    public function rules(): array
+    {
+        return [
+            'farmer_id'          => 'required|exists:farmers,id',
+            'payment_method'     => 'required|in:cash,credit',
+            'items'              => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity'   => 'required|integer|min:1',
+        ];
+    }
+
+    public function failedAuthorization()
+    {
+        throw new \Illuminate\Auth\Access\AuthorizationException(
+            'Only operators can place orders.'
+        );
+    }
 }
