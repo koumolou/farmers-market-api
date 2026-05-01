@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       APP_ENV: local
-      APP_KEY: base64:cLZ3lcz99LbSsFtqvKLf6WfoHVaetlmgLvL7MSCxCns=
+      APP_KEY: ${APP_KEY}
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
