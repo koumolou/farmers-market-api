@@ -56,6 +56,14 @@ API is now available at `http://localhost:8000/api`
 
 ---
 
+## Docker Setup
+
+```bash
+docker-compose up --build
+```
+
+API available at `http://localhost:8000/api`
+
 ## Demo Credentials
 
 | Role       | Email                   | Password |
