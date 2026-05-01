@@ -1,0 +1,1021 @@
+{
+  "info": {
+    "name": "Farmers Market API",
+    "description": "POS Operator Portal - Farmers Market Platform\nBase URL: http://127.0.0.1:8000/api\n\nDemo Accounts:\n- Admin:      admin@farmarket.ci      / password\n- Supervisor: supervisor@farmarket.ci / password\n- Operator:   operator@farmarket.ci   / password\n\nRoles:\n- admin: manages supervisors\n- supervisor: manages operators, categories, products\n- operator: manages farmers, places orders, records repayments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "admin_token", "value": "", "type": "string" },
+    { "key": "supervisor_token", "value": "", "type": "string" },
+    { "key": "operator_token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('admin_token', res.data.token);",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "  console.log('Admin token saved:', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@farmarket.ci\",\n  \"password\": \"password\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"token\": \"1|abc123xyz...\",\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Admin Principal\",\n      \"email\": \"admin@farmarket.ci\",\n      \"role\": \"admin\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Error - Invalid Credentials",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"email\": [\"These credentials do not match our records.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login as Supervisor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('supervisor_token', res.data.token);",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "  console.log('Supervisor token saved:', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"supervisor@farmarket.ci\",\n  \"password\": \"password\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"token\": \"2|def456uvw...\",\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"Kouassi Jean\",\n      \"email\": \"supervisor@farmarket.ci\",\n      \"role\": \"supervisor\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login as Operator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('operator_token', res.data.token);",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "  console.log('Operator token saved:', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"operator@farmarket.ci\",\n  \"password\": \"password\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"token\": \"3|ghi789rst...\",\n    \"user\": {\n      \"id\": 3,\n      \"name\": \"Yao Herve\",\n      \"email\": \"operator@farmarket.ci\",\n      \"role\": \"operator\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/me", "host": ["{{base_url}}"], "path": ["me"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"Yao Herve\",\n    \"email\": \"operator@farmarket.ci\",\n    \"role\": \"operator\"\n  }\n}"
+            },
+            {
+              "name": "Error - Unauthenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Unauthenticated. Please login.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/logout", "host": ["{{base_url}}"], "path": ["logout"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Logged out successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supervisors (Admin only)",
+      "description": "Requires admin token. Admin creates and manages supervisor accounts.",
+      "item": [
+        {
+          "name": "List Supervisors",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/supervisors", "host": ["{{base_url}}"], "path": ["supervisors"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 2,\n      \"name\": \"Kouassi Jean\",\n      \"email\": \"supervisor@farmarket.ci\",\n      \"role\": \"supervisor\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Forbidden\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Supervisor",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Diallo Aminata\",\n  \"email\": \"supervisor2@farmarket.ci\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/supervisors", "host": ["{{base_url}}"], "path": ["supervisors"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Supervisor created successfully\",\n  \"data\": {\n    \"id\": 4,\n    \"name\": \"Diallo Aminata\",\n    \"email\": \"supervisor2@farmarket.ci\",\n    \"role\": \"supervisor\"\n  }\n}"
+            },
+            {
+              "name": "Error - Validation",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"email\": [\"The email has already been taken.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Supervisor",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/supervisors/2", "host": ["{{base_url}}"], "path": ["supervisors", "2"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"Kouassi Jean\",\n    \"email\": \"supervisor@farmarket.ci\",\n    \"role\": \"supervisor\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Supervisor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kouassi Jean Updated\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/supervisors/2", "host": ["{{base_url}}"], "path": ["supervisors", "2"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Supervisor updated successfully\",\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"Kouassi Jean Updated\",\n    \"email\": \"supervisor@farmarket.ci\",\n    \"role\": \"supervisor\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Supervisor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/supervisors/2", "host": ["{{base_url}}"], "path": ["supervisors", "2"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Supervisor deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operators (Admin and Supervisor)",
+      "description": "Requires admin or supervisor token.",
+      "item": [
+        {
+          "name": "List Operators",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{supervisor_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/operators", "host": ["{{base_url}}"], "path": ["operators"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 3,\n      \"name\": \"Yao Herve\",\n      \"email\": \"operator@farmarket.ci\",\n      \"role\": \"operator\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Operator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{supervisor_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Koffi Serge\",\n  \"email\": \"operator2@farmarket.ci\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/operators", "host": ["{{base_url}}"], "path": ["operators"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Operator created successfully\",\n  \"data\": {\n    \"id\": 5,\n    \"name\": \"Koffi Serge\",\n    \"email\": \"operator2@farmarket.ci\",\n    \"role\": \"operator\"\n  }\n}"
+            },
+            {
+              "name": "Error - Forbidden (operator token)",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to create users.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Operator",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{supervisor_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/operators/3", "host": ["{{base_url}}"], "path": ["operators", "3"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"Yao Herve\",\n    \"email\": \"operator@farmarket.ci\",\n    \"role\": \"operator\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Operator",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{supervisor_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Yao Herve Updated\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/operators/3", "host": ["{{base_url}}"], "path": ["operators", "3"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Operator updated successfully\",\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"Yao Herve Updated\",\n    \"email\": \"operator@farmarket.ci\",\n    \"role\": \"operator\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Operator",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{supervisor_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/operators/3", "host": ["{{base_url}}"], "path": ["operators", "3"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Operator deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories (Admin and Supervisor write | All authenticated read)",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Pesticides\",\n      \"parent_id\": null,\n      \"children\": [\n        { \"id\": 4, \"name\": \"Herbicides\", \"parent_id\": 1 },\n        { \"id\": 5, \"name\": \"Insecticides\", \"parent_id\": 1 }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Engrais\",\n      \"parent_id\": null,\n      \"children\": [\n        { \"id\": 6, \"name\": \"NPK\", \"parent_id\": 2 },\n        { \"id\": 7, \"name\": \"Organique\", \"parent_id\": 2 }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Semences\",\n      \"parent_id\": null,\n      \"children\": []\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/categories/1", "host": ["{{base_url}}"], "path": ["categories", "1"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Pesticides\",\n    \"parent_id\": null,\n    \"children\": [\n      { \"id\": 4, \"name\": \"Herbicides\", \"parent_id\": 1 },\n      { \"id\": 5, \"name\": \"Insecticides\", \"parent_id\": 1 }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Category (root)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fongicides\",\n  \"parent_id\": null\n}"
+            },
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category created successfully\",\n  \"data\": {\n    \"id\": 8,\n    \"name\": \"Fongicides\",\n    \"parent_id\": null\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Subcategory",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fongicides Systémiques\",\n  \"parent_id\": 8\n}"
+            },
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 9,\n    \"name\": \"Fongicides Systemiques\",\n    \"parent_id\": 8\n  }\n}"
+            },
+            {
+              "name": "Error - Invalid Parent",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"parent_id\": [\"The selected parent id is invalid.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fongicides Updated\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/categories/8", "host": ["{{base_url}}"], "path": ["categories", "8"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category updated successfully\",\n  \"data\": {\n    \"id\": 8,\n    \"name\": \"Fongicides Updated\",\n    \"parent_id\": null\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/categories/8", "host": ["{{base_url}}"], "path": ["categories", "8"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products (Admin and Supervisor write | All authenticated read)",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Kalach 360 SL\",\n      \"description\": \"Herbicide systemique\",\n      \"price\": 3500,\n      \"category_id\": 4,\n      \"category\": { \"id\": 4, \"name\": \"Herbicides\" }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Primagram Gold\",\n      \"description\": \"Herbicide selectif mais\",\n      \"price\": 5200,\n      \"category_id\": 4,\n      \"category\": { \"id\": 4, \"name\": \"Herbicides\" }\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Decis EC 25\",\n      \"description\": \"Insecticide pyrethrinoide\",\n      \"price\": 4800,\n      \"category_id\": 5,\n      \"category\": { \"id\": 5, \"name\": \"Insecticides\" }\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products?category_id=4",
+              "host": ["{{base_url}}"],
+              "path": ["products"],
+              "query": [{ "key": "category_id", "value": "4", "description": "Filter by category ID (Herbicides = 4)" }]
+            }
+          },
+          "response": [
+            {
+              "name": "Success - Herbicides",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Kalach 360 SL\",\n      \"description\": \"Herbicide systemique\",\n      \"price\": 3500,\n      \"category_id\": 4\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Primagram Gold\",\n      \"description\": \"Herbicide selectif mais\",\n      \"price\": 5200,\n      \"category_id\": 4\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Product",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/products/1", "host": ["{{base_url}}"], "path": ["products", "1"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Kalach 360 SL\",\n    \"description\": \"Herbicide systemique\",\n    \"price\": 3500,\n    \"category_id\": 4,\n    \"category\": { \"id\": 4, \"name\": \"Herbicides\" }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mancozeb 80 WP\",\n  \"description\": \"Fongicide de contact\",\n  \"price\": 4200,\n  \"category_id\": 5\n}"
+            },
+            "url": { "raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Product created successfully\",\n  \"data\": {\n    \"id\": 8,\n    \"name\": \"Mancozeb 80 WP\",\n    \"description\": \"Fongicide de contact\",\n    \"price\": 4200,\n    \"category_id\": 5\n  }\n}"
+            },
+            {
+              "name": "Error - Validation",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"price\": [\"The price field is required.\"],\n    \"category_id\": [\"The selected category id is invalid.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 4500\n}"
+            },
+            "url": { "raw": "{{base_url}}/products/1", "host": ["{{base_url}}"], "path": ["products", "1"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Product updated successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Kalach 360 SL\",\n    \"price\": 4500,\n    \"category_id\": 4\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/products/8", "host": ["{{base_url}}"], "path": ["products", "8"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Product deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Farmers (Operator write | All authenticated read)",
+      "item": [
+        {
+          "name": "Search Farmer by ID or Phone",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/farmers/search?q=CI-2024-0003",
+              "host": ["{{base_url}}"],
+              "path": ["farmers", "search"],
+              "query": [{ "key": "q", "value": "CI-2024-0003", "description": "Search by identifier or phone number" }]
+            }
+          },
+          "response": [
+            {
+              "name": "Success - Found by Identifier",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 3,\n    \"identifier\": \"CI-2024-0003\",\n    \"firstname\": \"Toure\",\n    \"lastname\": \"Ibrahim\",\n    \"phone\": \"0709101112\",\n    \"credit_limit\": 100000\n  }\n}"
+            },
+            {
+              "name": "Success - Found by Phone",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 3,\n    \"identifier\": \"CI-2024-0003\",\n    \"firstname\": \"Toure\",\n    \"lastname\": \"Ibrahim\",\n    \"phone\": \"0709101112\",\n    \"credit_limit\": 100000\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Farmers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/farmers", "host": ["{{base_url}}"], "path": ["farmers"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    { \"id\": 1, \"identifier\": \"CI-2024-0001\", \"firstname\": \"Kone\", \"lastname\": \"Mamadou\", \"phone\": \"0701020304\", \"credit_limit\": 150000 },\n    { \"id\": 2, \"identifier\": \"CI-2024-0002\", \"firstname\": \"Bamba\", \"lastname\": \"Fatoumata\", \"phone\": \"0705060708\", \"credit_limit\": 200000 },\n    { \"id\": 3, \"identifier\": \"CI-2024-0003\", \"firstname\": \"Toure\", \"lastname\": \"Ibrahim\", \"phone\": \"0709101112\", \"credit_limit\": 100000 },\n    { \"id\": 4, \"identifier\": \"CI-2024-0004\", \"firstname\": \"Coulibaly\", \"lastname\": \"Aissatou\", \"phone\": \"0511121314\", \"credit_limit\": 80000 }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Farmer Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/farmers/3", "host": ["{{base_url}}"], "path": ["farmers", "3"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"farmer\": {\n      \"id\": 3,\n      \"identifier\": \"CI-2024-0003\",\n      \"firstname\": \"Toure\",\n      \"lastname\": \"Ibrahim\",\n      \"phone\": \"0709101112\",\n      \"credit_limit\": 100000\n    },\n    \"outstanding_debt\": 2210,\n    \"open_debts\": [\n      {\n        \"id\": 1,\n        \"original_amount\": 15210,\n        \"remaining_amount\": 2210,\n        \"status\": \"partial\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Farmer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"CI-2024-0005\",\n  \"firstname\": \"Ouattara\",\n  \"lastname\": \"Seydou\",\n  \"phone\": \"0712345678\",\n  \"credit_limit\": 90000\n}"
+            },
+            "url": { "raw": "{{base_url}}/farmers", "host": ["{{base_url}}"], "path": ["farmers"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Farmer created successfully\",\n  \"data\": {\n    \"id\": 5,\n    \"identifier\": \"CI-2024-0005\",\n    \"firstname\": \"Ouattara\",\n    \"lastname\": \"Seydou\",\n    \"phone\": \"0712345678\",\n    \"credit_limit\": 90000\n  }\n}"
+            },
+            {
+              "name": "Error - Duplicate Identifier",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"identifier\": [\"The identifier has already been taken.\"]\n  }\n}"
+            },
+            {
+              "name": "Error - Forbidden (non-operator)",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Only operators can create farmer profiles.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Farmer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"credit_limit\": 120000\n}"
+            },
+            "url": { "raw": "{{base_url}}/farmers/3", "host": ["{{base_url}}"], "path": ["farmers", "3"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Farmer updated successfully\",\n  \"data\": {\n    \"id\": 3,\n    \"identifier\": \"CI-2024-0003\",\n    \"firstname\": \"Toure\",\n    \"lastname\": \"Ibrahim\",\n    \"phone\": \"0709101112\",\n    \"credit_limit\": 120000\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Farmer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/farmers/5", "host": ["{{base_url}}"], "path": ["farmers", "5"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Farmer deleted successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transactions (Operator only)",
+      "item": [
+        {
+          "name": "Checkout - Cash Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmer_id\": 3,\n  \"payment_method\": \"cash\",\n  \"items\": [\n    { \"product_id\": 1, \"quantity\": 2 },\n    { \"product_id\": 7, \"quantity\": 1 }\n  ]\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/checkout", "host": ["{{base_url}}"], "path": ["transactions", "checkout"] }
+          },
+          "response": [
+            {
+              "name": "Success - Cash (Kalach x2 + Fumure x1 = 10,000 FCFA)",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Transaction completed successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"farmer_id\": 3,\n    \"operator_id\": 3,\n    \"payment_method\": \"cash\",\n    \"total\": 10000,\n    \"interest_rate\": 0,\n    \"interest_amount\": 0,\n    \"grand_total\": 10000,\n    \"items\": [\n      { \"product_id\": 1, \"quantity\": 2, \"unit_price\": 3500, \"subtotal\": 7000 },\n      { \"product_id\": 7, \"quantity\": 1, \"unit_price\": 3000, \"subtotal\": 3000 }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Checkout - Credit Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmer_id\": 3,\n  \"payment_method\": \"credit\",\n  \"items\": [\n    { \"product_id\": 1, \"quantity\": 1 },\n    { \"product_id\": 2, \"quantity\": 1 },\n    { \"product_id\": 7, \"quantity\": 1 }\n  ]\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/checkout", "host": ["{{base_url}}"], "path": ["transactions", "checkout"] }
+          },
+          "response": [
+            {
+              "name": "Success - Credit (Kalach + Primagram + Fumure = 11,700 FCFA + 30% = 15,210 FCFA)",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Transaction completed successfully\",\n  \"data\": {\n    \"id\": 2,\n    \"farmer_id\": 3,\n    \"operator_id\": 3,\n    \"payment_method\": \"credit\",\n    \"total\": 11700,\n    \"interest_rate\": 30,\n    \"interest_amount\": 3510,\n    \"grand_total\": 15210,\n    \"debt_created\": {\n      \"id\": 1,\n      \"amount\": 15210,\n      \"status\": \"open\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Error - Credit Limit Exceeded",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Credit limit exceeded. Farmer outstanding debt would exceed their credit limit of 100,000 FCFA.\"\n}"
+            },
+            {
+              "name": "Error - Forbidden (non-operator)",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Only operators can place orders.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Repayments (Operator only)",
+      "item": [
+        {
+          "name": "Get Farmer Repayment History",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/farmers/3/repayments", "host": ["{{base_url}}"], "path": ["farmers", "3", "repayments"] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 1,\n      \"farmer_id\": 3,\n      \"kg_received\": 13,\n      \"commodity_rate\": 1000,\n      \"fcfa_value\": 13000,\n      \"debts_affected\": [\n        {\n          \"debt_id\": 1,\n          \"amount_applied\": 13000,\n          \"debt_remaining\": 2210,\n          \"status\": \"partial\"\n        }\n      ],\n      \"created_at\": \"2026-04-30T10:00:00Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Record Repayment - Partial",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmer_id\": 3,\n  \"kg_received\": 13\n}"
+            },
+            "url": { "raw": "{{base_url}}/repayments", "host": ["{{base_url}}"], "path": ["repayments"] }
+          },
+          "response": [
+            {
+              "name": "Success - Partial (13kg x 1000 = 13,000 FCFA applied, 2,210 FCFA remains)",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Repayment recorded successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"farmer_id\": 3,\n    \"kg_received\": 13,\n    \"commodity_rate\": 1000,\n    \"fcfa_value\": 13000,\n    \"debts_affected\": [\n      {\n        \"debt_id\": 1,\n        \"amount_applied\": 13000,\n        \"debt_remaining\": 2210,\n        \"status\": \"partial\"\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Record Repayment - Full Settlement",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmer_id\": 3,\n  \"kg_received\": 3\n}"
+            },
+            "url": { "raw": "{{base_url}}/repayments", "host": ["{{base_url}}"], "path": ["repayments"] }
+          },
+          "response": [
+            {
+              "name": "Success - Full (3kg x 1000 = 3,000 FCFA clears remaining 2,210 FCFA)",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Repayment recorded successfully\",\n  \"data\": {\n    \"id\": 2,\n    \"farmer_id\": 3,\n    \"kg_received\": 3,\n    \"commodity_rate\": 1000,\n    \"fcfa_value\": 3000,\n    \"debts_affected\": [\n      {\n        \"debt_id\": 1,\n        \"amount_applied\": 2210,\n        \"debt_remaining\": 0,\n        \"status\": \"paid\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Error - Forbidden (non-operator)",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Only operators can record repayments.\"\n}"
+            },
+            {
+              "name": "Error - Validation",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": {\n    \"kg_received\": [\"The kg received field must be at least 0.001.\"]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
