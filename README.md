@@ -190,3 +190,9 @@ The collection includes:
 | repayments        | Commodity repayment records                               |
 | repayment_debt    | Pivot — tracks which debts each repayment settled         |
 | settings          | Configurable rates (interest_rate, commodity_rate_per_kg) |
+
+## AI Usage Report
+
+See `AI_USAGE_REPORT.md` in this repository for a full write-up on how Claude Code
+was used throughout development, where it helped most, and where human intervention
+was required.
